@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBag, Star, Users, Shield } from 'lucide-react';
+import { ShoppingBag, Star, Users, Shield, CreditCard } from 'lucide-react';
 
 const Home = () => {
   return (
@@ -16,13 +16,22 @@ const Home = () => {
             <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
               Discover amazing products at unbeatable prices. Your one-stop shop for everything you need.
             </p>
-            <Link
-              to="/shop"
-              className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
-            >
-              <ShoppingBag className="mr-2 h-5 w-5" />
-              Start Shopping
-            </Link>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link
+                to="/shop"
+                className="inline-flex items-center px-8 py-4 bg-white text-blue-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors"
+              >
+                <ShoppingBag className="mr-2 h-5 w-5" />
+                Start Shopping
+              </Link>
+              <Link
+                to="/checkout"
+                className="inline-flex items-center px-8 py-4 bg-transparent border-2 border-white text-white font-semibold rounded-lg hover:bg-white hover:text-blue-600 transition-colors"
+              >
+                <CreditCard className="mr-2 h-5 w-5" />
+                Get Premium - $29.99
+              </Link>
+            </div>
           </div>
         </div>
       </div>

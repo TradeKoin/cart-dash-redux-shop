@@ -1,6 +1,7 @@
 
 import React from 'react';
-import { Star, ShoppingCart } from 'lucide-react';
+import { Star, ShoppingCart, CreditCard } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Product } from '../store/slices/productsSlice';
 import { useAppDispatch } from '../hooks/redux';
 import { addToCart } from '../store/slices/cartSlice';
@@ -41,7 +42,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         
         <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
         
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
@@ -49,14 +50,24 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </div>
             <span className="ml-2 text-sm text-gray-500">({product.rating.count})</span>
           </div>
-          
+        </div>
+        
+        <div className="flex space-x-2">
           <button
             onClick={handleAddToCart}
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+            className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors duration-200"
           >
             <ShoppingCart className="h-4 w-4" />
             <span>Add to Cart</span>
           </button>
+          
+          <Link
+            to="/checkout"
+            className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors duration-200"
+          >
+            <CreditCard className="h-4 w-4" />
+            <span>Buy Now</span>
+          </Link>
         </div>
       </div>
     </div>

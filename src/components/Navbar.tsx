@@ -1,24 +1,19 @@
 
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, LogOut } from 'lucide-react';
+import { ShoppingCart, User } from 'lucide-react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart } from '../store/slices/cartSlice';
-import { useAuth } from '../hooks/useAuth';
 import { Button } from '@/components/ui/button';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { itemCount } = useAppSelector(state => state.cart);
-  const { user, logout } = useAuth();
   const location = useLocation();
 
   const isActive = (path: string) => {
     return location.pathname === path;
-  };
-
-  const handleLogout = () => {
-    logout();
   };
 
   return (
@@ -90,36 +85,18 @@ const Navbar = () => {
             </button>
             
             {/* User Menu */}
-            {user ? (
-              <div className="flex items-center space-x-2">
-                <div className="flex items-center space-x-2">
-                  <User className="h-5 w-5 text-gray-600" />
-                  <span className="text-sm text-gray-700">Hi, {user.name}</span>
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleLogout}
-                  className="flex items-center space-x-1"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Logout</span>
+            <SignedIn>
+              <UserButton afterSignOutUrl="/" />
+            </SignedIn>
+            
+            <SignedOut>
+              <SignInButton mode="modal">
+                <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+                  <User className="h-4 w-4" />
+                  <span>Sign In</span>
                 </Button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Link to="/login">
-                  <Button variant="ghost" size="sm">
-                    Sign In
-                  </Button>
-                </Link>
-                <Link to="/signup">
-                  <Button size="sm">
-                    Sign Up
-                  </Button>
-                </Link>
-              </div>
-            )}
+              </SignInButton>
+            </SignedOut>
           </div>
         </div>
       </div>
