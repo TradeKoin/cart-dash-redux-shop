@@ -1,14 +1,12 @@
 
 import React, { useEffect } from 'react';
-import { Provider } from 'react-redux';
-import { store } from '../store/store';
 import { useAppDispatch } from '../hooks/redux';
 import { fetchProducts } from '../store/slices/productsSlice';
 import CategoryFilter from '../components/CategoryFilter';
 import ProductGrid from '../components/ProductGrid';
 import Cart from '../components/Cart';
 
-const ShopContent = () => {
+const Shop = () => {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -29,14 +27,6 @@ const ShopContent = () => {
         <ProductGrid />
       </main>
     </div>
-  );
-};
-
-const Shop = () => {
-  return (
-    <Provider store={store}>
-      <ShopContent />
-    </Provider>
   );
 };
 
