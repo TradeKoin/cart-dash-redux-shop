@@ -1,0 +1,66 @@
+
+import React from 'react';
+import { Star, ShoppingCart } from 'lucide-react';
+import { Product } from '../store/slices/productsSlice';
+import { useAppDispatch } from '../hooks/redux';
+import { addToCart } from '../store/slices/cartSlice';
+import { useToast } from '../hooks/use-toast';
+
+interface ProductCardProps {
+  product: Product;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const dispatch = useAppDispatch();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    dispatch(addToCart(product));
+    toast({
+      title: "Added to cart",
+      description: `${product.title} has been added to your cart.`,
+    });
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
+      <div className="relative overflow-hidden">
+        <img
+          src={product.image}
+          alt={product.title}
+          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all duration-300" />
+      </div>
+      
+      <div className="p-4">
+        <div className="flex items-start justify-between mb-2">
+          <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{product.title}</h3>
+          <span className="text-lg font-bold text-blue-600 ml-2">${product.price}</span>
+        </div>
+        
+        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+        
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="flex items-center">
+              <Star className="h-4 w-4 text-yellow-400 fill-current" />
+              <span className="ml-1 text-sm text-gray-600">{product.rating.rate}</span>
+            </div>
+            <span className="ml-2 text-sm text-gray-500">({product.rating.count})</span>
+          </div>
+          
+          <button
+            onClick={handleAddToCart}
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center space-x-2 transition-colors duration-200"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            <span>Add to Cart</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductCard;
