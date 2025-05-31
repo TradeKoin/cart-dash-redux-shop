@@ -7,11 +7,14 @@ import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart } from '../store/slices/cartSlice';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from './ThemeToggle';
+import LanguageToggle from './LanguageToggle';
+import { useLanguage } from '../contexts/LanguageContext';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { itemCount } = useAppSelector(state => state.cart);
   const location = useLocation();
+  const { t } = useLanguage();
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -36,7 +39,7 @@ const Navbar = () => {
                   : 'text-muted-foreground hover:text-blue-600'
               }`}
             >
-              Home
+              {t('home')}
             </Link>
             <Link
               to="/shop"
@@ -46,7 +49,7 @@ const Navbar = () => {
                   : 'text-muted-foreground hover:text-blue-600'
               }`}
             >
-              Shop
+              {t('shop')}
             </Link>
             <Link
               to="/about"
@@ -56,7 +59,7 @@ const Navbar = () => {
                   : 'text-muted-foreground hover:text-blue-600'
               }`}
             >
-              About
+              {t('about')}
             </Link>
             <Link
               to="/contact"
@@ -66,12 +69,15 @@ const Navbar = () => {
                   : 'text-muted-foreground hover:text-blue-600'
               }`}
             >
-              Contact
+              {t('contact')}
             </Link>
           </div>
           
           {/* Right side actions */}
           <div className="flex items-center space-x-4">
+            {/* Language Toggle */}
+            <LanguageToggle />
+            
             {/* Theme Toggle */}
             <ThemeToggle />
             
@@ -97,7 +103,7 @@ const Navbar = () => {
               <SignInButton mode="modal">
                 <Button variant="ghost" size="sm" className="flex items-center space-x-1">
                   <User className="h-4 w-4" />
-                  <span>Sign In</span>
+                  <span>{t('signIn')}</span>
                 </Button>
               </SignInButton>
             </SignedOut>

@@ -6,6 +6,7 @@ import { Product } from '../store/slices/productsSlice';
 import { useAppDispatch } from '../hooks/redux';
 import { addToCart } from '../store/slices/cartSlice';
 import { useToast } from '../hooks/use-toast';
+import { useLanguage } from '../contexts/LanguageContext';
 
 interface ProductCardProps {
   product: Product;
@@ -14,17 +15,18 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const handleAddToCart = () => {
     dispatch(addToCart(product));
     toast({
-      title: "Added to cart",
-      description: `${product.title} has been added to your cart.`,
+      title: t('addedToCart'),
+      description: `${product.title} ${t('addedToCartDesc')}`,
     });
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
+    <div className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group border">
       <div className="relative overflow-hidden">
         <img
           src={product.image}
@@ -36,19 +38,19 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
-          <h3 className="text-lg font-semibold text-gray-900 line-clamp-2">{product.title}</h3>
+          <h3 className="text-lg font-semibold text-foreground line-clamp-2">{product.title}</h3>
           <span className="text-lg font-bold text-blue-600 ml-2">${product.price}</span>
         </div>
         
-        <p className="text-gray-600 text-sm mb-3 line-clamp-2">{product.description}</p>
+        <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>
         
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center">
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span className="ml-1 text-sm text-gray-600">{product.rating.rate}</span>
+              <span className="ml-1 text-sm text-muted-foreground">{product.rating.rate}</span>
             </div>
-            <span className="ml-2 text-sm text-gray-500">({product.rating.count})</span>
+            <span className="ml-2 text-sm text-muted-foreground">({product.rating.count})</span>
           </div>
         </div>
         
@@ -58,7 +60,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors duration-200"
           >
             <ShoppingCart className="h-4 w-4" />
-            <span>Add to Cart</span>
+            <span>{t('addToCart')}</span>
           </button>
           
           <Link
@@ -66,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             className="flex-1 bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg flex items-center justify-center space-x-2 transition-colors duration-200"
           >
             <CreditCard className="h-4 w-4" />
-            <span>Buy Now</span>
+            <span>{t('buyNow')}</span>
           </Link>
         </div>
       </div>
