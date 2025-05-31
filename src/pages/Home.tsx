@@ -5,7 +5,7 @@ import { ShoppingBag, Star, Users, Shield, CreditCard } from 'lucide-react';
 
 const Home = () => {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
@@ -40,39 +40,39 @@ const Home = () => {
       <div className="py-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Why Choose ShopHub?</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl font-bold text-foreground mb-4">Why Choose ShopHub?</h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               We're committed to providing you with the best shopping experience possible.
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-blue-100 dark:bg-blue-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Star className="h-8 w-8 text-blue-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Quality Products</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-foreground">Quality Products</h3>
+              <p className="text-muted-foreground">
                 Carefully curated selection of high-quality products from trusted brands.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-green-100 dark:bg-green-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Users className="h-8 w-8 text-green-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Customer Support</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-foreground">Customer Support</h3>
+              <p className="text-muted-foreground">
                 24/7 customer support to help you with any questions or concerns.
               </p>
             </div>
             
             <div className="text-center">
-              <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="bg-purple-100 dark:bg-purple-900 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                 <Shield className="h-8 w-8 text-purple-600" />
               </div>
-              <h3 className="text-xl font-semibold mb-2">Secure Shopping</h3>
-              <p className="text-gray-600">
+              <h3 className="text-xl font-semibold mb-2 text-foreground">Secure Shopping</h3>
+              <p className="text-muted-foreground">
                 Your data and payments are protected with industry-leading security.
               </p>
             </div>
