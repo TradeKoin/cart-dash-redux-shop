@@ -7,6 +7,7 @@ import { useAppDispatch } from '../hooks/redux';
 import { addToCart } from '../store/slices/cartSlice';
 import { useToast } from '../hooks/use-toast';
 import { useLanguage } from '../contexts/LanguageContext';
+import OptimizedImage from './OptimizedImage';
 
 interface ProductCardProps {
   product: Product;
@@ -28,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group border">
       <div className="relative overflow-hidden">
-        <img
+        <OptimizedImage
           src={product.image}
           alt={product.title}
           className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"

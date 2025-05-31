@@ -4,6 +4,7 @@ import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart, updateQuantity, removeFromCart, clearCart } from '../store/slices/cartSlice';
 import { useLanguage } from '../contexts/LanguageContext';
+import OptimizedImage from './OptimizedImage';
 
 const Cart = () => {
   const dispatch = useAppDispatch();
@@ -37,7 +38,7 @@ const Cart = () => {
               <div className="space-y-4">
                 {items.map((item) => (
                   <div key={item.id} className="flex items-center space-x-4 bg-muted/50 p-3 rounded-lg">
-                    <img
+                    <OptimizedImage
                       src={item.image}
                       alt={item.title}
                       className="w-16 h-16 object-cover rounded-lg"
