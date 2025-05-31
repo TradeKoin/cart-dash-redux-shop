@@ -1,12 +1,9 @@
 
 import React, { useState } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Check, ShoppingBag } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-
-const stripePromise = loadStripe('pk_test_51234567890abcdef'); // You'll need to replace this with your Stripe publishable key
 
 const Checkout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,8 +13,8 @@ const Checkout = () => {
     setIsLoading(true);
     
     try {
+      // For now, we'll simulate the checkout process
       // In a real app, you'd call your backend here to create a Stripe session
-      // For now, we'll simulate the process
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       toast({
