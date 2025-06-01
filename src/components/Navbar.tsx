@@ -1,10 +1,12 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User } from 'lucide-react';
+import { ShoppingCart, User, Search } from 'lucide-react';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart } from '../store/slices/cartSlice';
+import { setSearchTerm } from '../store/slices/productsSlice';
+import { useDebounce } from '../hooks/useDebounce';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from './ThemeToggle';
 import LanguageToggle from './LanguageToggle';
@@ -13,8 +15,25 @@ import { useLanguage } from '../contexts/LanguageContext';
 const Navbar = () => {
   const dispatch = useAppDispatch();
   const { itemCount } = useAppSelector(state => state.cart);
+  const { searchTerm } = useAppSelector(state => state.products);
   const location = useLocation();
   const { t } = useLanguage();
+
+  // Local state for immediate UI updates
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  
+  // Debounced value that will trigger the actual search
+  const debouncedSearchTerm = useDebounce(localSearchTerm, 300);
+
+  // Update Redux state only when debounced value changes
+  useEffect(() => {
+    dispatch(setSearchTerm(debouncedSearchTerm));
+  }, [debouncedSearchTerm, dispatch]);
+
+  // Sync local state with Redux state on external changes
+  useEffect(() => {
+    setLocalSearchTerm(searchTerm);
+  }, [searchTerm]);
 
   const isActive = (path: string) => {
     return location.pathname === path;
@@ -71,6 +90,22 @@ const Navbar = () => {
             >
               {t('contact')}
             </Link>
+          </div>
+
+          {/* Search Bar - Center */}
+          <div className="flex-1 max-w-md mx-8">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <Search className="h-5 w-5 text-gray-400" />
+              </div>
+              <input
+                type="text"
+                placeholder="Search products..."
+                value={localSearchTerm}
+                onChange={(e) => setLocalSearchTerm(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-input bg-background rounded-lg focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+              />
+            </div>
           </div>
           
           {/* Right side actions */}
