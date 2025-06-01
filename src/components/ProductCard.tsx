@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Star, ShoppingCart, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product } from '../store/slices/productsSlice';
@@ -13,18 +13,18 @@ interface ProductCardProps {
   product: Product;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { t } = useLanguage();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = useCallback(() => {
     dispatch(addToCart(product));
     toast({
       title: t('addedToCart'),
       description: `${product.title} ${t('addedToCartDesc')}`,
     });
-  };
+  }, [dispatch, product, toast, t]);
 
   return (
     <div className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group border">
@@ -75,6 +75,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
       </div>
     </div>
   );
-};
+});
+
+ProductCard.displayName = 'ProductCard';
 
 export default ProductCard;

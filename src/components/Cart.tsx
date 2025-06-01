@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useCallback } from 'react';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart, updateQuantity, removeFromCart, clearCart } from '../store/slices/cartSlice';
@@ -7,25 +7,41 @@ import { selectCartTotal, selectCartItemCount } from '../store/selectors';
 import { useLanguage } from '../contexts/LanguageContext';
 import OptimizedImage from './OptimizedImage';
 
-const Cart = () => {
+const Cart = React.memo(() => {
   const dispatch = useAppDispatch();
   const { items, isOpen } = useAppSelector(state => state.cart);
   const total = useAppSelector(selectCartTotal);
   const itemCount = useAppSelector(selectCartItemCount);
   const { t } = useLanguage();
 
+  const handleToggleCart = useCallback(() => {
+    dispatch(toggleCart());
+  }, [dispatch]);
+
+  const handleUpdateQuantity = useCallback((id: number, quantity: number) => {
+    dispatch(updateQuantity({ id, quantity }));
+  }, [dispatch]);
+
+  const handleRemoveFromCart = useCallback((id: number) => {
+    dispatch(removeFromCart(id));
+  }, [dispatch]);
+
+  const handleClearCart = useCallback(() => {
+    dispatch(clearCart());
+  }, [dispatch]);
+
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 overflow-hidden">
-      <div className="absolute inset-0 bg-black bg-opacity-50" onClick={() => dispatch(toggleCart())} />
+      <div className="absolute inset-0 bg-black bg-opacity-50" onClick={handleToggleCart} />
       
       <div className="absolute right-0 top-0 h-full w-full max-w-md bg-card shadow-xl border-l">
         <div className="flex flex-col h-full">
           <div className="flex items-center justify-between p-4 border-b">
             <h2 className="text-lg font-semibold text-foreground">{t('shoppingCart')} ({itemCount})</h2>
             <button
-              onClick={() => dispatch(toggleCart())}
+              onClick={handleToggleCart}
               className="p-2 hover:bg-muted rounded-lg"
             >
               <X className="h-5 w-5" />
@@ -53,20 +69,20 @@ const Cart = () => {
                       
                       <div className="flex items-center space-x-2 mt-2">
                         <button
-                          onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity - 1)}
                           className="p-1 hover:bg-muted rounded"
                         >
                           <Minus className="h-4 w-4" />
                         </button>
                         <span className="px-2 py-1 bg-background rounded border">{item.quantity}</span>
                         <button
-                          onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
+                          onClick={() => handleUpdateQuantity(item.id, item.quantity + 1)}
                           className="p-1 hover:bg-muted rounded"
                         >
                           <Plus className="h-4 w-4" />
                         </button>
                         <button
-                          onClick={() => dispatch(removeFromCart(item.id))}
+                          onClick={() => handleRemoveFromCart(item.id)}
                           className="p-1 hover:bg-red-100 text-red-600 rounded ml-2"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -90,7 +106,7 @@ const Cart = () => {
                   {t('checkout')}
                 </button>
                 <button
-                  onClick={() => dispatch(clearCart())}
+                  onClick={handleClearCart}
                   className="w-full bg-muted hover:bg-muted/80 text-foreground py-2 rounded-lg font-medium transition-colors"
                 >
                   {t('clearCart')}
@@ -102,6 +118,8 @@ const Cart = () => {
       </div>
     </div>
   );
-};
+});
+
+Cart.displayName = 'Cart';
 
 export default Cart;

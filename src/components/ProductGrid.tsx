@@ -5,7 +5,7 @@ import { selectFilteredProducts } from '../store/selectors';
 import ProductCard from './ProductCard';
 import { useLanguage } from '../contexts/LanguageContext';
 
-const ProductGrid = () => {
+const ProductGrid = React.memo(() => {
   const filteredProducts = useAppSelector(selectFilteredProducts);
   const { loading, error } = useAppSelector(state => state.products);
   const { t } = useLanguage();
@@ -53,6 +53,8 @@ const ProductGrid = () => {
       ))}
     </div>
   );
-};
+});
+
+ProductGrid.displayName = 'ProductGrid';
 
 export default ProductGrid;
