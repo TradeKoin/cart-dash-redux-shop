@@ -1,14 +1,31 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, ShoppingCart } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setSearchTerm } from '../store/slices/productsSlice';
 import { toggleCart } from '../store/slices/cartSlice';
+import { useDebounce } from '../hooks/useDebounce';
 
 const Header = () => {
   const dispatch = useAppDispatch();
   const { searchTerm } = useAppSelector(state => state.products);
   const { itemCount } = useAppSelector(state => state.cart);
+  
+  // Local state for immediate UI updates
+  const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
+  
+  // Debounced value that will trigger the actual search
+  const debouncedSearchTerm = useDebounce(localSearchTerm, 300);
+
+  // Update Redux state only when debounced value changes
+  useEffect(() => {
+    dispatch(setSearchTerm(debouncedSearchTerm));
+  }, [debouncedSearchTerm, dispatch]);
+
+  // Sync local state with Redux state on external changes
+  useEffect(() => {
+    setLocalSearchTerm(searchTerm);
+  }, [searchTerm]);
 
   return (
     <header className="bg-white shadow-sm border-b sticky top-0 z-40">
@@ -26,8 +43,8 @@ const Header = () => {
               <input
                 type="text"
                 placeholder="Search products..."
-                value={searchTerm}
-                onChange={(e) => dispatch(setSearchTerm(e.target.value))}
+                value={localSearchTerm}
+                onChange={(e) => setLocalSearchTerm(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
