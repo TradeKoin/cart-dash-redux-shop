@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { PLACEHOLDER_IMAGE, INTERSECTION_THRESHOLD, INTERSECTION_ROOT_MARGIN } from '../constants';
 
 interface OptimizedImageProps {
   src: string;
@@ -17,7 +18,7 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
   className,
   width,
   height,
-  placeholder = "https://via.placeholder.com/400x300/f3f4f6/9ca3af?text=Loading..."
+  placeholder = PLACEHOLDER_IMAGE
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
@@ -41,8 +42,8 @@ const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   React.useEffect(() => {
     const observer = new IntersectionObserver(handleIntersection, {
-      threshold: 0.1,
-      rootMargin: '50px',
+      threshold: INTERSECTION_THRESHOLD,
+      rootMargin: INTERSECTION_ROOT_MARGIN,
     });
 
     const imageRef = document.querySelector(`[data-src="${src}"]`);
