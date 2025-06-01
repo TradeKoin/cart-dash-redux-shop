@@ -3,12 +3,15 @@ import React from 'react';
 import { X, Plus, Minus, Trash2 } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart, updateQuantity, removeFromCart, clearCart } from '../store/slices/cartSlice';
+import { selectCartTotal, selectCartItemCount } from '../store/selectors';
 import { useLanguage } from '../contexts/LanguageContext';
 import OptimizedImage from './OptimizedImage';
 
 const Cart = () => {
   const dispatch = useAppDispatch();
-  const { items, isOpen, total, itemCount } = useAppSelector(state => state.cart);
+  const { items, isOpen } = useAppSelector(state => state.cart);
+  const total = useAppSelector(selectCartTotal);
+  const itemCount = useAppSelector(selectCartItemCount);
   const { t } = useLanguage();
 
   if (!isOpen) return null;

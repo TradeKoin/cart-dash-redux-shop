@@ -6,6 +6,7 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-reac
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { toggleCart } from '../store/slices/cartSlice';
 import { setSearchTerm } from '../store/slices/productsSlice';
+import { selectCartItemCount } from '../store/selectors';
 import { useDebounce } from '../hooks/useDebounce';
 import { Button } from '@/components/ui/button';
 import ThemeToggle from './ThemeToggle';
@@ -14,7 +15,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 
 const Navbar = () => {
   const dispatch = useAppDispatch();
-  const { itemCount } = useAppSelector(state => state.cart);
+  const itemCount = useAppSelector(selectCartItemCount);
   const { searchTerm } = useAppSelector(state => state.products);
   const location = useLocation();
   const { t } = useLanguage();

@@ -16,10 +16,8 @@ export interface Product {
 
 interface ProductsState {
   products: Product[];
-  filteredProducts: Product[];
   loading: boolean;
   error: string | null;
-  categories: string[];
   selectedCategory: string;
   searchTerm: string;
 }
@@ -94,10 +92,8 @@ export const fetchProducts = createAsyncThunk(
 
 const initialState: ProductsState = {
   products: [],
-  filteredProducts: [],
   loading: false,
   error: null,
-  categories: [],
   selectedCategory: 'all',
   searchTerm: '',
 };
@@ -108,11 +104,9 @@ const productsSlice = createSlice({
   reducers: {
     setSelectedCategory: (state, action: PayloadAction<string>) => {
       state.selectedCategory = action.payload;
-      state.filteredProducts = filterProducts(state);
     },
     setSearchTerm: (state, action: PayloadAction<string>) => {
       state.searchTerm = action.payload;
-      state.filteredProducts = filterProducts(state);
     },
   },
   extraReducers: (builder) => {
@@ -124,8 +118,6 @@ const productsSlice = createSlice({
       .addCase(fetchProducts.fulfilled, (state, action) => {
         state.loading = false;
         state.products = action.payload;
-        state.categories = ['all', ...Array.from(new Set(action.payload.map(p => p.category)))];
-        state.filteredProducts = action.payload;
       })
       .addCase(fetchProducts.rejected, (state, action) => {
         state.loading = false;
@@ -133,23 +125,6 @@ const productsSlice = createSlice({
       });
   },
 });
-
-const filterProducts = (state: ProductsState) => {
-  let filtered = state.products;
-  
-  if (state.selectedCategory !== 'all') {
-    filtered = filtered.filter(product => product.category === state.selectedCategory);
-  }
-  
-  if (state.searchTerm) {
-    filtered = filtered.filter(product =>
-      product.title.toLowerCase().includes(state.searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(state.searchTerm.toLowerCase())
-    );
-  }
-  
-  return filtered;
-};
 
 export const { setSelectedCategory, setSearchTerm } = productsSlice.actions;
 export default productsSlice.reducer;

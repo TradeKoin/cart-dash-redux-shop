@@ -2,11 +2,13 @@
 import React from 'react';
 import { useAppDispatch, useAppSelector } from '../hooks/redux';
 import { setSelectedCategory } from '../store/slices/productsSlice';
+import { selectCategories } from '../store/selectors';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const CategoryFilter = () => {
   const dispatch = useAppDispatch();
-  const { categories, selectedCategory } = useAppSelector(state => state.products);
+  const categories = useAppSelector(selectCategories);
+  const { selectedCategory } = useAppSelector(state => state.products);
   const { t } = useLanguage();
 
   return (

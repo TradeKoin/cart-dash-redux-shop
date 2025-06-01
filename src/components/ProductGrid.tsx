@@ -1,11 +1,13 @@
 
 import React from 'react';
 import { useAppSelector } from '../hooks/redux';
+import { selectFilteredProducts } from '../store/selectors';
 import ProductCard from './ProductCard';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const ProductGrid = () => {
-  const { filteredProducts, loading, error } = useAppSelector(state => state.products);
+  const filteredProducts = useAppSelector(selectFilteredProducts);
+  const { loading, error } = useAppSelector(state => state.products);
   const { t } = useLanguage();
 
   if (loading) {
