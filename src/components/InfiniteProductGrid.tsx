@@ -1,18 +1,24 @@
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 import { useInfiniteProducts } from '../services/productsService';
 import ProductCard from './ProductCard';
 import { useLanguage } from '../contexts/LanguageContext';
 import { useAppSelector } from '../hooks/redux';
 import { Loader2 } from 'lucide-react';
+import ErrorBoundary from './ErrorBoundary';
+import { usePerformance } from '../hooks/usePerformance';
 
 const InfiniteProductGrid = React.memo(() => {
   const { selectedCategory, searchTerm } = useAppSelector(state => state.products);
   const { t } = useLanguage();
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const performance = usePerformance('InfiniteProductGrid');
 
   // Create filters string for query key
-  const filters = JSON.stringify({ category: selectedCategory, search: searchTerm });
+  const filters = useMemo(() => 
+    JSON.stringify({ category: selectedCategory, search: searchTerm }), 
+    [selectedCategory, searchTerm]
+  );
 
   const {
     data,
@@ -51,18 +57,23 @@ const InfiniteProductGrid = React.memo(() => {
     };
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  // Flatten all pages into a single array
-  const allProducts = data?.pages.flatMap(page => page.products) || [];
+  // Flatten all pages into a single array with memoization
+  const allProducts = useMemo(() => 
+    data?.pages.flatMap(page => page.products) || [], 
+    [data]
+  );
 
-  // Filter products based on category and search
-  const filteredProducts = allProducts.filter(product => {
-    const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
-    const matchesSearch = !searchTerm || 
-      product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchTerm.toLowerCase());
-    
-    return matchesCategory && matchesSearch;
-  });
+  // Filter products based on category and search with memoization
+  const filteredProducts = useMemo(() => {
+    return allProducts.filter(product => {
+      const matchesCategory = selectedCategory === 'all' || product.category === selectedCategory;
+      const matchesSearch = !searchTerm || 
+        product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.description.toLowerCase().includes(searchTerm.toLowerCase());
+      
+      return matchesCategory && matchesSearch;
+    });
+  }, [allProducts, selectedCategory, searchTerm]);
 
   if (isLoading) {
     return (
@@ -101,26 +112,30 @@ const InfiniteProductGrid = React.memo(() => {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <ProductCard key={product.id} product={product} />
-        ))}
-      </div>
+    <ErrorBoundary>
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map((product) => (
+            <ErrorBoundary key={product.id}>
+              <ProductCard product={product} />
+            </ErrorBoundary>
+          ))}
+        </div>
 
-      {/* Load more trigger */}
-      <div ref={loadMoreRef} className="flex justify-center py-4">
-        {isFetchingNextPage && (
-          <div className="flex items-center space-x-2 text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" />
-            <span>Loading more products...</span>
-          </div>
-        )}
-        {!hasNextPage && filteredProducts.length > 0 && (
-          <p className="text-muted-foreground">You've reached the end!</p>
-        )}
+        {/* Load more trigger */}
+        <div ref={loadMoreRef} className="flex justify-center py-4">
+          {isFetchingNextPage && (
+            <div className="flex items-center space-x-2 text-muted-foreground">
+              <Loader2 className="h-4 w-4 animate-spin" />
+              <span>Loading more products...</span>
+            </div>
+          )}
+          {!hasNextPage && filteredProducts.length > 0 && (
+            <p className="text-muted-foreground">You've reached the end!</p>
+          )}
+        </div>
       </div>
-    </div>
+    </ErrorBoundary>
   );
 });
 

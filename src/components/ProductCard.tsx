@@ -1,5 +1,5 @@
 
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Star, ShoppingCart, CreditCard } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Product } from '../store/slices/productsSlice';
@@ -26,6 +26,13 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
     });
   }, [dispatch, product, toast, t]);
 
+  const formattedPrice = useMemo(() => `$${product.price.toFixed(2)}`, [product.price]);
+  
+  const ratingDisplay = useMemo(() => ({
+    rate: product.rating.rate.toFixed(1),
+    count: product.rating.count
+  }), [product.rating]);
+
   return (
     <div className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group border">
       <div className="relative overflow-hidden">
@@ -40,7 +47,7 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
           <h3 className="text-lg font-semibold text-foreground line-clamp-2">{product.title}</h3>
-          <span className="text-lg font-bold text-blue-600 ml-2">${product.price}</span>
+          <span className="text-lg font-bold text-blue-600 ml-2">{formattedPrice}</span>
         </div>
         
         <p className="text-muted-foreground text-sm mb-3 line-clamp-2">{product.description}</p>
@@ -49,9 +56,9 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
           <div className="flex items-center">
             <div className="flex items-center">
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span className="ml-1 text-sm text-muted-foreground">{product.rating.rate}</span>
+              <span className="ml-1 text-sm text-muted-foreground">{ratingDisplay.rate}</span>
             </div>
-            <span className="ml-2 text-sm text-muted-foreground">({product.rating.count})</span>
+            <span className="ml-2 text-sm text-muted-foreground">({ratingDisplay.count})</span>
           </div>
         </div>
         
@@ -74,6 +81,13 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
         </div>
       </div>
     </div>
+  );
+}, (prevProps, nextProps) => {
+  // Custom comparison function for better performance
+  return (
+    prevProps.product.id === nextProps.product.id &&
+    prevProps.product.price === nextProps.product.price &&
+    prevProps.product.title === nextProps.product.title
   );
 });
 

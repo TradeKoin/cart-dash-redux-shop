@@ -5,6 +5,8 @@ import { fetchProducts } from '../store/slices/productsSlice';
 import { CategoryFilter, Cart } from '../components/ShopComponents';
 import InfiniteProductGrid from '../components/InfiniteProductGrid';
 import { useLanguage } from '../contexts/LanguageContext';
+import ErrorBoundary from '../components/ErrorBoundary';
+import { usePerformance } from '../hooks/usePerformance';
 
 const ComponentSkeleton = () => (
   <div className="animate-pulse">
@@ -20,6 +22,7 @@ const ComponentSkeleton = () => (
 const Shop = () => {
   const dispatch = useAppDispatch();
   const { t } = useLanguage();
+  const performance = usePerformance('Shop');
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -27,9 +30,11 @@ const Shop = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Suspense fallback={<div className="h-16" />}>
-        <Cart />
-      </Suspense>
+      <ErrorBoundary>
+        <Suspense fallback={<div className="h-16" />}>
+          <Cart />
+        </Suspense>
+      </ErrorBoundary>
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
@@ -37,13 +42,17 @@ const Shop = () => {
           <p className="text-muted-foreground">{t('shopSubtitle')}</p>
         </div>
         
-        <Suspense fallback={<div className="h-20 bg-muted rounded-lg mb-6 animate-pulse" />}>
-          <CategoryFilter />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<div className="h-20 bg-muted rounded-lg mb-6 animate-pulse" />}>
+            <CategoryFilter />
+          </Suspense>
+        </ErrorBoundary>
         
-        <Suspense fallback={<ComponentSkeleton />}>
-          <InfiniteProductGrid />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense fallback={<ComponentSkeleton />}>
+            <InfiniteProductGrid />
+          </Suspense>
+        </ErrorBoundary>
       </main>
     </div>
   );
