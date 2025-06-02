@@ -2,7 +2,8 @@
 import React, { useEffect, Suspense } from 'react';
 import { useAppDispatch } from '../hooks/redux';
 import { fetchProducts } from '../store/slices/productsSlice';
-import { CategoryFilter, ProductGrid, Cart } from '../components/ShopComponents';
+import { CategoryFilter, Cart } from '../components/ShopComponents';
+import InfiniteProductGrid from '../components/InfiniteProductGrid';
 import { useLanguage } from '../contexts/LanguageContext';
 
 const ComponentSkeleton = () => (
@@ -41,7 +42,7 @@ const Shop = () => {
         </Suspense>
         
         <Suspense fallback={<ComponentSkeleton />}>
-          <ProductGrid />
+          <InfiniteProductGrid />
         </Suspense>
       </main>
     </div>
