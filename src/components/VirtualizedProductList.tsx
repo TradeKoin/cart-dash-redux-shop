@@ -96,6 +96,7 @@ const VirtualizedProductList: React.FC<VirtualizedProductListProps> = ({
   return (
     <List
       height={height}
+      width="100%"
       itemCount={itemCount}
       itemSize={rowHeight}
       itemData={itemData}
