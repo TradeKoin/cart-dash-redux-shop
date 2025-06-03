@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -18,6 +17,7 @@ import Navbar from "./components/Navbar";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PWAInstallBanner from "./components/PWAInstallBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
+import RouteProgressBar from "./components/RouteProgressBar";
 
 // Lazy load all page components
 const Home = lazy(() => import("./pages/Home"));
@@ -39,6 +39,7 @@ const AppContent = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
+      <RouteProgressBar />
       <ErrorBoundary>
         <Suspense fallback={<LoadingSpinner />}>
           <Routes>
