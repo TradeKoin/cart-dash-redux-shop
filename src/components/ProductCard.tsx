@@ -7,6 +7,8 @@ import { useAppDispatch } from '../hooks/redux';
 import { addToCart } from '../store/slices/cartSlice';
 import { useToast } from '../hooks/use-toast';
 import { useLanguage } from '../contexts/LanguageContext';
+import { usePrefetch } from '../hooks/usePrefetch';
+import { useSmartPrefetch } from '../hooks/useSmartPrefetch';
 import OptimizedImage from './OptimizedImage';
 
 interface ProductCardProps {
@@ -17,6 +19,8 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
   const dispatch = useAppDispatch();
   const { toast } = useToast();
   const { t } = useLanguage();
+  const { prefetchProduct, cancelPrefetch } = usePrefetch();
+  const { shouldPrefetchProduct, trackProductView } = useSmartPrefetch();
 
   const handleAddToCart = useCallback(() => {
     dispatch(addToCart(product));
@@ -26,6 +30,17 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
     });
   }, [dispatch, product, toast, t]);
 
+  const handleMouseEnter = useCallback(() => {
+    if (shouldPrefetchProduct(product.id)) {
+      prefetchProduct(product.id, 200); // Shorter delay for smart prefetch
+    }
+    trackProductView(product.id);
+  }, [product.id, prefetchProduct, shouldPrefetchProduct, trackProductView]);
+
+  const handleMouseLeave = useCallback(() => {
+    cancelPrefetch(product.id);
+  }, [product.id, cancelPrefetch]);
+
   const formattedPrice = useMemo(() => `$${product.price.toFixed(2)}`, [product.price]);
   
   const ratingDisplay = useMemo(() => ({
@@ -34,7 +49,11 @@ const ProductCard: React.FC<ProductCardProps> = React.memo(({ product }) => {
   }), [product.rating]);
 
   return (
-    <div className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group border">
+    <div 
+      className="bg-card rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden group border"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="relative overflow-hidden">
         <OptimizedImage
           src={product.image}
