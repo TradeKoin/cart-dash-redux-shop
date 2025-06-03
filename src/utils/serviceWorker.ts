@@ -76,7 +76,9 @@ export const requestBackgroundSync = async (tag: string): Promise<void> => {
   if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
     try {
       const registration = await navigator.serviceWorker.ready;
-      await registration.sync.register(tag);
+      if (registration.sync) {
+        await registration.sync.register(tag);
+      }
     } catch (error) {
       console.error('Background sync registration failed:', error);
     }
