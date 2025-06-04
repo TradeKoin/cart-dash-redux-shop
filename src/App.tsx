@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,6 +15,7 @@ import { LanguageProvider } from './contexts/LanguageContext';
 import { useWebVitals } from './hooks/useWebVitals';
 import { useErrorReporting } from './hooks/useErrorReporting';
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
 import LoadingSpinner from "./components/LoadingSpinner";
 import PWAInstallBanner from "./components/PWAInstallBanner";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -37,21 +39,24 @@ const AppContent = () => {
   const { reportError } = useErrorReporting();
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-background text-foreground flex flex-col">
       <Navbar />
       <RouteProgressBar />
       <ErrorBoundary>
         <Suspense fallback={<LoadingSpinner />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
+          <main className="flex-1">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/shop" element={<Shop />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/checkout" element={<Checkout />} />
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </main>
         </Suspense>
       </ErrorBoundary>
+      <Footer />
       <PWAInstallBanner />
     </div>
   );
