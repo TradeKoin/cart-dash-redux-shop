@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { MapPin, Navigation } from 'lucide-react';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
 declare global {
@@ -12,13 +11,15 @@ declare global {
 }
 
 const Map = () => {
-  const [googleMapsApiKey, setGoogleMapsApiKey] = useState('');
-  const [showApiKeyInput, setShowApiKeyInput] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [mapError, setMapError] = useState(false);
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  
+  // Your Google Maps API key
+  const GOOGLE_MAPS_API_KEY = 'AIzaSyAFcQicsPRRI_-HBSTEAtHb7XDKdwj-D8o';
 
-  const loadGoogleMapsScript = (apiKey: string) => {
+  const loadGoogleMapsScript = () => {
     return new Promise<void>((resolve, reject) => {
       if (window.google && window.google.maps) {
         resolve();
@@ -31,10 +32,13 @@ const Map = () => {
       };
 
       const script = document.createElement('script');
-      script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap`;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${GOOGLE_MAPS_API_KEY}&callback=initMap`;
       script.async = true;
       script.defer = true;
-      script.onerror = () => reject(new Error('Failed to load Google Maps'));
+      script.onerror = () => {
+        setMapError(true);
+        reject(new Error('Failed to load Google Maps'));
+      };
       document.head.appendChild(script);
     });
   };
@@ -53,7 +57,7 @@ const Map = () => {
     });
 
     // Add marker for ShopHub location
-    new window.google.maps.Marker({
+    const marker = new window.google.maps.Marker({
       position: shophubLocation,
       map: mapInstanceRef.current,
       title: 'ShopHub Location',
@@ -83,66 +87,34 @@ const Map = () => {
     });
 
     // Show info window on marker click
-    const marker = new window.google.maps.Marker({
-      position: shophubLocation,
-      map: mapInstanceRef.current,
-    });
-
     marker.addListener('click', () => {
       infoWindow.open(mapInstanceRef.current, marker);
     });
   };
 
-  const handleApiKeySubmit = async () => {
-    if (!googleMapsApiKey.trim()) return;
-
-    try {
-      await loadGoogleMapsScript(googleMapsApiKey);
-      setShowApiKeyInput(false);
-      console.log('Google Maps API loaded successfully');
-    } catch (error) {
+  useEffect(() => {
+    loadGoogleMapsScript().catch((error) => {
       console.error('Failed to load Google Maps:', error);
-      alert('Failed to load Google Maps. Please check your API key.');
-    }
-  };
+      setMapError(true);
+    });
+  }, []);
 
   useEffect(() => {
-    if (mapLoaded && !showApiKeyInput) {
+    if (mapLoaded) {
       initializeMap();
     }
-  }, [mapLoaded, showApiKeyInput]);
+  }, [mapLoaded]);
 
-  if (showApiKeyInput) {
+  if (mapError) {
     return (
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-xl font-semibold mb-4">Interactive Map</h3>
-        <div className="space-y-4">
-          <p className="text-gray-600">
-            To display an interactive Google Map, please enter your Google Maps API key:
-          </p>
-          <div className="flex gap-2">
-            <Input
-              type="text"
-              placeholder="Enter your Google Maps API key"
-              value={googleMapsApiKey}
-              onChange={(e) => setGoogleMapsApiKey(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleApiKeySubmit}>
-              Load Map
-            </Button>
-          </div>
-          <p className="text-sm text-gray-500">
-            Get your free API key at{' '}
-            <a
-              href="https://developers.google.com/maps/documentation/javascript/get-api-key"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-blue-600 hover:underline"
-            >
-              Google Cloud Console
-            </a>
-          </p>
+        <div className="text-center">
+          <MapPin className="h-16 w-16 text-red-600 mx-auto mb-4" />
+          <p className="text-gray-600 mb-4">Failed to load Google Maps. Please check your internet connection.</p>
+          <Button onClick={() => window.location.reload()}>
+            Retry
+          </Button>
         </div>
       </div>
     );
@@ -178,13 +150,6 @@ const Map = () => {
             >
               <Navigation className="h-4 w-4 mr-1" />
               Directions
-            </Button>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              onClick={() => setShowApiKeyInput(true)}
-            >
-              Reload Map
             </Button>
           </div>
         </div>
